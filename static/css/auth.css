@@ -1,0 +1,109 @@
+:root {
+  color-scheme: dark;
+  --bg: #10131a;
+  --panel: #171b24;
+  --panel-soft: #1d2330;
+  --border: #262c3a;
+  --text: #e7e9ee;
+  --muted: #9aa3b6;
+  --accent: #4f8cff;
+  --danger: #ef4b5f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px "Segoe UI", Arial, sans-serif;
+  padding: 20px;
+}
+
+main {
+  width: min(100%, 420px);
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
+}
+
+h1 { margin: 0 0 10px; font-size: 2rem; }
+
+p { color: var(--muted); margin: 0 0 22px; }
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #121722;
+  margin-bottom: 22px;
+}
+
+.tab {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  padding: 10px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0;
+}
+
+.tab.active {
+  background: var(--panel-soft);
+  color: var(--text);
+}
+
+form { display: none; }
+
+form.active { display: block; }
+
+label {
+  display: block;
+  margin-top: 16px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+input,
+button {
+  width: 100%;
+  padding: 11px 12px;
+  margin-top: 6px;
+  border-radius: 8px;
+  font: inherit;
+}
+
+input {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: #0d0f15;
+}
+
+.primary {
+  margin-top: 22px;
+  border: 0;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#message {
+  min-height: 22px;
+  margin-top: 16px;
+  font-size: 0.92rem;
+}
+
+#message.error { color: var(--danger); }
+
+#message.success { color: #7ed6a7; }

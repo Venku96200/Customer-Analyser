@@ -1,0 +1,99 @@
+.batch-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.batch-form input[type="file"] { flex: 1 1 260px; }
+
+.hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+.batch-result {
+  margin-top: 32px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  display: none;
+}
+
+.batch-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.batch-result-header h2 { margin: 0; }
+
+.dashboard-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 42px rgba(92, 146, 197, 0.1);
+}
+
+.dashboard-panel h2 { margin: 0 0 8px; }
+
+.dashboard-panel p {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.metric-card {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(235, 245, 255, 0.92) 100%);
+}
+
+.metric-label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.chart-card {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.chart-card h3 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+}
+
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}

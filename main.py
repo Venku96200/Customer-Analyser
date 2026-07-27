@@ -3,7 +3,8 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 import models  # Registers SQLAlchemy models before create_all().
 from database import Base, engine
@@ -26,6 +27,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+
 app.include_router(auth.router)
 app.include_router(predictions.router)
 
@@ -37,4 +40,19 @@ def root():
 
 @app.get("/app", include_in_schema=False)
 def prediction_page():
-    return FileResponse(BASE_DIR / "index.html")
+    return RedirectResponse(url="/app/menu", status_code=307)
+
+
+@app.get("/app/menu", include_in_schema=False)
+def menu_page():
+    return FileResponse(BASE_DIR / "templates" / "menu.html")
+
+
+@app.get("/app/single", include_in_schema=False)
+def single_prediction_page():
+    return FileResponse(BASE_DIR / "templates" / "single.html")
+
+
+@app.get("/app/batch", include_in_schema=False)
+def batch_prediction_page():
+    return FileResponse(BASE_DIR / "templates" / "batch.html")

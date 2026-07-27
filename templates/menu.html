@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer.Ai - Menu</title>
+  <link rel="stylesheet" href="/static/css/app-common.css">
+  <link rel="stylesheet" href="/static/css/menu.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="topbar-copy">
+        <h1>Customer.Ai</h1>
+        <p class="sub">Choose a prediction mode after signing in.</p>
+      </div>
+      <div class="actions">
+        <button class="ghost is-hidden" id="home" type="button">Back to options</button>
+        <button class="ghost" id="logout" type="button">Sign out</button>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="mode-grid">
+        <article class="mode-card">
+          <h2>Single Prediction</h2>
+          <p>Enter one customer's details and get an instant churn result with probability and risk level.</p>
+          <button class="primary" id="go-single" type="button">Open single prediction</button>
+        </article>
+        <article class="mode-card">
+          <h2>Batch Prediction</h2>
+          <p>Upload a CSV file with multiple customers and receive churn predictions for every row in one go.</p>
+          <button class="primary" id="go-batch" type="button">Open batch prediction</button>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <script src="/static/js/app-common.js"></script>
+  <script src="/static/js/menu.js"></script>
+</body>
+</html>

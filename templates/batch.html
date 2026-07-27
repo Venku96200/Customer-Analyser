@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer.Ai - Batch Prediction</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/static/css/app-common.css">
+  <link rel="stylesheet" href="/static/css/batch.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="topbar-copy">
+        <h1>Customer.Ai</h1>
+      </div>
+      <div class="actions">
+        <button class="ghost" id="home" type="button">Back to options</button>
+        <button class="ghost" id="logout" type="button">Sign out</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="sub">Batch prediction from a CSV file.</p>
+      <form id="batch-form" class="batch-form">
+        <input type="file" name="file" accept=".csv" required>
+        <button class="primary" type="submit">Run batch prediction</button>
+      </form>
+      <p class="hint">
+        CSV columns must match the model fields exactly:
+        gender, SeniorCitizen, Partner, Dependents, tenure, PhoneService, MultipleLines,
+        InternetService, OnlineSecurity, OnlineBackup, DeviceProtection, TechSupport,
+        StreamingTV, StreamingMovies, Contract, PaperlessBilling, PaymentMethod,
+        MonthlyCharges, TotalCharges.
+      </p>
+      <div id="batch-error" class="error"></div>
+      <div id="batch-result" class="batch-result">
+        <div class="batch-result-header">
+          <h2>Batch results</h2>
+          <button class="ghost is-hidden" id="open-dashboard" type="button">Open dashboard</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Row</th><th>Prediction</th><th>Risk</th><th>Probability</th></tr></thead>
+            <tbody id="batch-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="batch-dashboard" class="dashboard-panel hidden">
+        <h2>Batch dashboard</h2>
+        <p>Summary of the uploaded CSV prediction results.</p>
+        <div class="metric-grid" id="dashboard-metrics"></div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>Churn split</h3>
+            <div class="chart-wrap"><canvas id="churn-split-chart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>Risk distribution</h3>
+            <div class="chart-wrap"><canvas id="risk-distribution-chart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>Churn by contract</h3>
+            <div class="chart-wrap"><canvas id="contract-churn-chart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/app-common.js"></script>
+  <script src="/static/js/batch.js"></script>
+</body>
+</html>
