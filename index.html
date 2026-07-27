@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Customer.Ai — Churn Prediction</title>
+<style>
+  :root {
+    --bg: #10131a;
+    --panel: #171b24;
+    --border: #262c3a;
+    --text: #e7e9ee;
+    --muted: #8b93a5;
+    --accent: #4f8cff;
+    --low: #3ecf8e;
+    --medium: #f5a623;
+    --high: #ef4b5f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    padding: 40px 16px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  p.sub { color: var(--muted); margin-top: 0; margin-bottom: 28px; }
+  form {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  label { font-size: 0.8rem; color: var(--muted); }
+  select, input {
+    background: #0d0f15;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+  button {
+    grid-column: 1 / -1;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  button:hover { opacity: 0.9; }
+  #result {
+    margin-top: 24px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: none;
+  }
+  #result.low { border-color: var(--low); }
+  #result.medium { border-color: var(--medium); }
+  #result.high { border-color: var(--high); }
+  #result h2 { margin: 0 0 8px 0; font-size: 1.1rem; }
+  #result .prob { font-size: 2rem; font-weight: 700; }
+  #error {
+    display: none;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #2a1418;
+    color: var(--high);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Customer.Ai</h1>
+  <p class="sub">Churn prediction MVP — enter a customer's details to get a live prediction.</p>
+
+  <form id="predict-form">
+    <div class="field">
+      <label>Gender</label>
+      <select name="gender"><option>Male</option><option>Female</option></select>
+    </div>
+    <div class="field">
+      <label>Senior Citizen</label>
+      <select name="SeniorCitizen"><option value="0">No</option><option value="1">Yes</option></select>
+    </div>
+    <div class="field">
+      <label>Partner</label>
+      <select name="Partner"><option>Yes</option><option>No</option></select>
+    </div>
+    <div class="field">
+      <label>Dependents</label>
+      <select name="Dependents"><option>Yes</option><option>No</option></select>
+    </div>
+    <div class="field">
+      <label>Tenure (months)</label>
+      <input type="number" name="tenure" value="12" min="0">
+    </div>
+    <div class="field">
+      <label>Phone Service</label>
+      <select name="PhoneService"><option>Yes</option><option>No</option></select>
+    </div>
+    <div class="field">
+      <label>Multiple Lines</label>
+      <select name="MultipleLines"><option>No</option><option>Yes</option><option>No phone service</option></select>
+    </div>
+    <div class="field">
+      <label>Internet Service</label>
+      <select name="InternetService"><option>DSL</option><option>Fiber optic</option><option>No</option></select>
+    </div>
+    <div class="field">
+      <label>Online Security</label>
+      <select name="OnlineSecurity"><option>No</option><option>Yes</option><option>No internet service</option></select>
+    </div>
+    <div class="field">
+      <label>Online Backup</label>
+      <select name="OnlineBackup"><option>No</option><option>Yes</option><option>No internet service</option></select>
+    </div>
+    <div class="field">
+      <label>Device Protection</label>
+      <select name="DeviceProtection"><option>No</option><option>Yes</option><option>No internet service</option></select>
+    </div>
+    <div class="field">
+      <label>Tech Support</label>
+      <select name="TechSupport"><option>No</option><option>Yes</option><option>No internet service</option></select>
+    </div>
+    <div class="field">
+      <label>Streaming TV</label>
+      <select name="StreamingTV"><option>No</option><option>Yes</option><option>No internet service</option></select>
+    </div>
+    <div class="field">
+      <label>Streaming Movies</label>
+      <select name="StreamingMovies"><option>No</option><option>Yes</option><option>No internet service</option></select>
+    </div>
+    <div class="field">
+      <label>Contract</label>
+      <select name="Contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select>
+    </div>
+    <div class="field">
+      <label>Paperless Billing</label>
+      <select name="PaperlessBilling"><option>Yes</option><option>No</option></select>
+    </div>
+    <div class="field">
+      <label>Payment Method</label>
+      <select name="PaymentMethod">
+        <option>Electronic check</option>
+        <option>Mailed check</option>
+        <option>Bank transfer (automatic)</option>
+        <option>Credit card (automatic)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Monthly Charges</label>
+      <input type="number" step="0.01" name="MonthlyCharges" value="70.00">
+    </div>
+    <div class="field">
+      <label>Total Charges</label>
+      <input type="number" step="0.01" name="TotalCharges" value="840.00">
+    </div>
+
+    <button type="submit">Predict churn</button>
+  </form>
+
+  <div id="result">
+    <h2 id="result-label"></h2>
+    <div class="prob" id="result-prob"></div>
+  </div>
+  <div id="error"></div>
+</div>
+
+<script>
+const form = document.getElementById('predict-form');
+const resultBox = document.getElementById('result');
+const errorBox = document.getElementById('error');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorBox.style.display = 'none';
+  resultBox.style.display = 'none';
+
+  const formData = new FormData(form);
+  const payload = {};
+  for (const [key, value] of formData.entries()) {
+    if (['tenure', 'SeniorCitizen'].includes(key)) {
+      payload[key] = parseInt(value, 10);
+    } else if (['MonthlyCharges', 'TotalCharges'].includes(key)) {
+      payload[key] = parseFloat(value);
+    } else {
+      payload[key] = value;
+    }
+  }
+
+  try {
+    const res = await fetch('/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Prediction failed');
+    }
+
+    const data = await res.json();
+    resultBox.className = data.risk_level.toLowerCase();
+    resultBox.style.display = 'block';
+    document.getElementById('result-label').textContent =
+      `${data.prediction} — ${data.risk_level} risk`;
+    document.getElementById('result-prob').textContent =
+      `${(data.churn_probability * 100).toFixed(1)}% probability`;
+  } catch (err) {
+    errorBox.textContent = err.message;
+    errorBox.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>
