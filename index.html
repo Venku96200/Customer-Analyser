@@ -24,6 +24,9 @@
     padding: 40px 16px;
   }
   .wrap { max-width: 720px; margin: 0 auto; }
+  .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .topbar h1 { margin:0; }
+  .logout { width:auto; margin:0; padding:8px 12px; background:transparent; border:1px solid var(--border); }
   h1 { font-size: 1.5rem; margin-bottom: 4px; }
   p.sub { color: var(--muted); margin-top: 0; margin-bottom: 28px; }
   form {
@@ -80,11 +83,15 @@
     color: var(--high);
     font-size: 0.85rem;
   }
+  .history { margin-top:32px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  th, td { padding:12px; text-align:left; border-bottom:1px solid var(--border); font-size:.88rem; }
+  th { color:var(--muted); font-weight:600; } tr:last-child td { border-bottom:0; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Customer.Ai</h1>
+  <div class="topbar"><h1>Customer.Ai</h1><button class="logout" id="logout" type="button">Sign out</button></div>
   <p class="sub">Churn prediction MVP — enter a customer's details to get a live prediction.</p>
 
   <form id="predict-form">
@@ -178,12 +185,37 @@
     <div class="prob" id="result-prob"></div>
   </div>
   <div id="error"></div>
+  <section class="history">
+    <h2>Previous predictions</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Result</th><th>Risk</th><th>Probability</th></tr></thead>
+      <tbody id="history-body"><tr><td colspan="4">Loading history…</td></tr></tbody>
+    </table>
+  </section>
 </div>
 
 <script>
+const accessToken = localStorage.getItem('accessToken');
+if (!accessToken) location.replace('/');
+document.getElementById('logout').addEventListener('click', () => {
+  localStorage.removeItem('accessToken');
+  location.replace('/');
+});
 const form = document.getElementById('predict-form');
 const resultBox = document.getElementById('result');
 const errorBox = document.getElementById('error');
+const historyBody = document.getElementById('history-body');
+
+async function loadHistory() {
+  const response = await fetch('/predictions', { headers: { 'Authorization': `Bearer ${accessToken}` } });
+  if (response.status === 401) { localStorage.removeItem('accessToken'); location.replace('/'); return; }
+  if (!response.ok) { historyBody.innerHTML = '<tr><td colspan="4">Unable to load history.</td></tr>'; return; }
+  const records = await response.json();
+  if (!records.length) { historyBody.innerHTML = '<tr><td colspan="4">No predictions yet.</td></tr>'; return; }
+  historyBody.innerHTML = records.map(record => `<tr><td>${new Date(record.created_at).toLocaleString()}</td><td>${record.prediction}</td><td>${record.risk_level}</td><td>${(record.churn_probability * 100).toFixed(1)}%</td></tr>`).join('');
+}
+
+loadHistory();
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -205,7 +237,7 @@ form.addEventListener('submit', async (e) => {
   try {
     const res = await fetch('/predict', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
       body: JSON.stringify(payload)
     });
 
@@ -221,6 +253,7 @@ form.addEventListener('submit', async (e) => {
       `${data.prediction} — ${data.risk_level} risk`;
     document.getElementById('result-prob').textContent =
       `${(data.churn_probability * 100).toFixed(1)}% probability`;
+    loadHistory();
   } catch (err) {
     errorBox.textContent = err.message;
     errorBox.style.display = 'block';
