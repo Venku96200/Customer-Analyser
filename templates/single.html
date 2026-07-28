@@ -112,6 +112,20 @@
         <div class="prob" id="result-prob"></div>
         <p class="result-summary" id="result-summary"></p>
         <div class="insight-list" id="insight-list"></div>
+        <button class="primary advisor-trigger" id="generate-advice" type="button">Generate retention advice</button>
+        <p class="advisor-hint">This uses a fully local retrieval-and-advice flow: the app retrieves relevant retention playbook notes, then builds recommendations from that context.</p>
+        <div class="advisor-panel" id="advisor-panel">
+          <h3>Retention advice</h3>
+          <p id="advisor-summary"></p>
+          <div class="advisor-actions">
+            <h4>Recommended actions</h4>
+            <ul id="advisor-actions-list"></ul>
+          </div>
+          <div class="advisor-sources">
+            <h4>Retrieved playbook sources</h4>
+            <ul id="advisor-sources-list"></ul>
+          </div>
+        </div>
       </div>
       <div id="single-error" class="error"></div>
     </div>

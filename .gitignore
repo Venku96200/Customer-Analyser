@@ -5,3 +5,4 @@ venv/
 *.pkl
 .DS_Store
 .env
+.vector_store/

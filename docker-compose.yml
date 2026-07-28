@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: customer-analyser-db
+    environment:
+      POSTGRES_DB: customer_analyser
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: customer-analyser-app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/customer_analyser
+      SECRET_KEY: change-this-development-secret-before-deploying
+      ACCESS_TOKEN_EXPIRE_MINUTES: 480
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

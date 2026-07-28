@@ -74,3 +74,18 @@ class PredictionExplanation(BaseModel):
 
 class SinglePredictionResponse(PredictionOutput):
     explanation: PredictionExplanation
+
+
+class AdviceSource(BaseModel):
+    title: str
+    snippet: str
+
+
+class RetentionAdviceRequest(BaseModel):
+    customer: CustomerInput
+
+
+class RetentionAdviceResponse(PredictionOutput):
+    summary: str
+    recommended_actions: list[str]
+    retrieved_sources: list[AdviceSource]

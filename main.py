@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 import models  # Registers SQLAlchemy models before create_all().
 from database import Base, engine
-from routers import auth, predictions
+from routers import advisor, auth, predictions
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -31,11 +31,17 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 app.include_router(auth.router)
 app.include_router(predictions.router)
+app.include_router(advisor.router)
 
 
 @app.get("/", include_in_schema=False)
 def root():
     return FileResponse(BASE_DIR / "templates" / "login.html")
+
+
+@app.get("/health", include_in_schema=False)
+def health():
+    return {"status": "ok"}
 
 
 @app.get("/app", include_in_schema=False)

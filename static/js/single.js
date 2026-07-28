@@ -4,6 +4,27 @@ const historyBody = document.getElementById("history-body");
 const clearHistoryButton = document.getElementById("clear-history");
 const resultSummary = document.getElementById("result-summary");
 const insightList = document.getElementById("insight-list");
+const generateAdviceButton = document.getElementById("generate-advice");
+const advisorPanel = document.getElementById("advisor-panel");
+const advisorSummary = document.getElementById("advisor-summary");
+const advisorActionsList = document.getElementById("advisor-actions-list");
+const advisorSourcesList = document.getElementById("advisor-sources-list");
+
+let lastCustomerPayload = null;
+
+async function readErrorMessage(response, fallbackMessage) {
+  const raw = await response.text();
+  if (!raw) {
+    return fallbackMessage;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed.detail || fallbackMessage;
+  } catch {
+    return raw;
+  }
+}
 
 async function loadHistory() {
   const response = await fetchWithAuth("/predictions");
@@ -39,6 +60,8 @@ document.getElementById("predict-form").addEventListener("submit", async (event)
   event.preventDefault();
   singleErrorBox.style.display = "none";
   resultBox.style.display = "none";
+  advisorPanel.style.display = "none";
+  generateAdviceButton.disabled = true;
 
   const formData = new FormData(event.currentTarget);
   const payload = {};
@@ -51,6 +74,7 @@ document.getElementById("predict-form").addEventListener("submit", async (event)
       payload[key] = value;
     }
   }
+  lastCustomerPayload = payload;
 
   try {
     const response = await fetchWithAuth("/predict", {
@@ -60,13 +84,13 @@ document.getElementById("predict-form").addEventListener("submit", async (event)
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || "Prediction failed.");
+      throw new Error(await readErrorMessage(response, "Prediction failed."));
     }
 
     const data = await response.json();
     resultBox.className = data.risk_level.toLowerCase();
     resultBox.style.display = "block";
+    generateAdviceButton.disabled = false;
     document.getElementById("result-label").textContent = `${data.prediction} - ${data.risk_level} risk`;
     document.getElementById("result-prob").textContent = `${(data.churn_probability * 100).toFixed(1)}% probability`;
     resultSummary.textContent = data.explanation.summary;
@@ -95,6 +119,40 @@ document.getElementById("predict-form").addEventListener("submit", async (event)
   }
 });
 
+generateAdviceButton.addEventListener("click", async () => {
+  if (!lastCustomerPayload) {
+    return;
+  }
+
+  generateAdviceButton.disabled = true;
+  generateAdviceButton.textContent = "Generating advice...";
+  singleErrorBox.style.display = "none";
+
+  try {
+    const response = await fetchWithAuth("/ai/retention-advice", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ customer: lastCustomerPayload }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await readErrorMessage(response, "Unable to generate retention advice."));
+    }
+
+    const data = await response.json();
+    advisorSummary.textContent = data.summary;
+    advisorActionsList.innerHTML = data.recommended_actions.map((action) => `<li>${action}</li>`).join("");
+    advisorSourcesList.innerHTML = data.retrieved_sources.map((source) => `<li><strong>${source.title}:</strong> ${source.snippet}</li>`).join("");
+    advisorPanel.style.display = "block";
+  } catch (error) {
+    singleErrorBox.textContent = error.message;
+    singleErrorBox.style.display = "block";
+  } finally {
+    generateAdviceButton.disabled = false;
+    generateAdviceButton.textContent = "Generate retention advice";
+  }
+});
+
 clearHistoryButton.addEventListener("click", async () => {
   if (clearHistoryButton.disabled) {
     return;
@@ -109,11 +167,11 @@ clearHistoryButton.addEventListener("click", async () => {
   try {
     const response = await fetchWithAuth("/predictions", { method: "DELETE" });
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || "Unable to clear history.");
+      throw new Error(await readErrorMessage(response, "Unable to clear history."));
     }
 
     resultBox.style.display = "none";
+    advisorPanel.style.display = "none";
     await loadHistory();
   } catch (error) {
     singleErrorBox.textContent = error.message;

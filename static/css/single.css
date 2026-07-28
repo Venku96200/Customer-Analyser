@@ -87,6 +87,62 @@ form.single-form button {
 
 .insight-card p + p { margin-top: 10px; }
 
+.advisor-trigger {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.advisor-hint {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.advisor-panel {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.78);
+  display: none;
+}
+
+.advisor-panel h3 {
+  margin: 0 0 8px;
+  font-size: 1.08rem;
+}
+
+.advisor-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.advisor-actions,
+.advisor-sources {
+  margin-top: 18px;
+}
+
+.advisor-actions h4,
+.advisor-sources h4 {
+  margin: 0 0 10px;
+  font-size: 0.96rem;
+}
+
+.advisor-actions ul,
+.advisor-sources ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text);
+}
+
+.advisor-actions li,
+.advisor-sources li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
 .history { margin-top: 32px; }
 
 .history-header {
