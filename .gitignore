@@ -6,3 +6,5 @@ venv/
 .DS_Store
 .env
 .vector_store/
+!Customer_Churn_model/model.pkl
+!encoders.pkl

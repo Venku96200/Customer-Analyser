@@ -45,26 +45,9 @@ uvicorn main:app --reload
 
 Open `http://localhost:8000` to sign in or sign up.
 
-## Docker
-
-Run the full app and PostgreSQL together:
-
-```bash
-docker compose up --build
-```
-
-Then open `http://localhost:8000`.
-
-The compose setup includes:
-- `app` - FastAPI application
-- `db` - PostgreSQL 16
-
 ## Deployment Notes
 
-This repo is now ready for container-based deployment.
-
 Useful defaults:
-- container entrypoint is defined in `Dockerfile`
 - `Procfile` is included for simple platform start command detection
 - `/health` is available for health checks
 
